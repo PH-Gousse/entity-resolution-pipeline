@@ -1,0 +1,28 @@
+dataset:
+  name: amazon_google
+  table_a: data/amazon-google/tableA.csv
+  table_b: data/amazon-google/tableB.csv
+  train: data/amazon-google/train.csv
+  valid: data/amazon-google/valid.csv
+  test: data/amazon-google/test.csv
+  id_col: id
+  text_col: title
+  structured_cols: [manufacturer, price]
+
+model:
+  type: lightgbm
+  params:
+    n_estimators: 1000
+    learning_rate: 0.05
+    num_leaves: 31
+  early_stopping_rounds: 50
+
+blocking:
+  method: tfidf_cosine
+  threshold: 0.1
+
+pipeline:
+  random_seed: 42
+  embedding_model: all-MiniLM-L6-v2
+  output_dir: results
+  artifacts_dir: artifacts
