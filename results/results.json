@@ -1,0 +1,29 @@
+{
+  "model": {
+    "threshold": 0.3617021276595745,
+    "precision": 0.5448504983388704,
+    "recall": 0.7008547008547008,
+    "f1": 0.6130841121495327,
+    "auc_roc": 0.93378143900242,
+    "average_precision": 0.6212643222910338,
+    "brier_score": 0.05503084785045366,
+    "n_test": 2293,
+    "n_positive": 234,
+    "n_predicted_positive": 301
+  },
+  "baseline": {
+    "threshold": 0.7073170731707318,
+    "precision": 0.347953216374269,
+    "recall": 0.5085470085470085,
+    "f1": 0.4131944444444444,
+    "auc_roc": 0.754292183991067,
+    "average_precision": 0.33477580449895533,
+    "brier_score": 0.32752726975059415,
+    "n_test": 2293,
+    "n_positive": 234,
+    "n_predicted_positive": 342,
+    "baseline_feature": "token_sort_ratio",
+    "baseline_type": "single_feature"
+  },
+  "blocking_recall_ceiling": 1.0
+}
