@@ -6,11 +6,9 @@ import json
 import logging
 from pathlib import Path
 
-import matplotlib as mpl
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
-mpl.use("Agg")  # non-interactive backend for CI/headless
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import (
     average_precision_score,
@@ -51,6 +49,9 @@ def evaluate(
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Use non-interactive backend for file-based plot generation
+    matplotlib.use("Agg")
 
     probs = calibrated_model.predict_proba(X_test)
     preds = (probs >= threshold).astype(int)
