@@ -51,6 +51,8 @@ The LightGBM model outperforms the naive baseline by 48% F1. The gap to DeepMatc
 
 String similarity features dominate, but price signals (log ratio, absolute diff) and embedding cosine similarities contribute meaningfully. This validates the thesis that structured and embedding features add signal beyond what string metrics alone capture.
 
+See [FEATURES.md](FEATURES.md) for the full feature catalog with descriptions.
+
 ## Calibration
 
 ![Calibration Curve](results/calibration_curve.png)
