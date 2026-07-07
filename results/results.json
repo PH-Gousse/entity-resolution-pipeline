@@ -24,6 +24,5 @@
     "n_predicted_positive": 342,
     "baseline_feature": "token_sort_ratio",
     "baseline_type": "single_feature"
-  },
-  "blocking_recall_ceiling": 1.0
+  }
 }
