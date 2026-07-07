@@ -10,14 +10,14 @@ Entity resolution (record linkage) answers: "do these two records from different
 
 String similarity alone fails in predictable ways: it can't exploit structured signals like price (two products with the same name but a 10x price difference are probably different listings) or manufacturer identity. The highest-leverage features in entity resolution are not string metrics but structured and cross-field signals that string-only approaches miss entirely.
 
-Calibrated probabilities are what make an ER system operationally useful. A raw classifier score of 0.73 is meaningless without calibration. An isotonic-calibrated probability of 0.73 means "73% of pairs at this score are true matches" and lets you set principled thresholds: auto-link above 0.95, send to human review between 0.5-0.95, auto-reject below 0.5.
+Calibrated probabilities are what make an ER system operationally useful. A raw classifier score of 0.73 is meaningless without calibration. An isotonic-calibrated probability of 0.73 means "73% of pairs at this score are true matches," which lets you set decision thresholds on a meaningful probability scale rather than on arbitrary model scores.
 
 ## Pipeline
 
 ```
   tableA.csv ──┐
                ├──▶ Normalize ──▶ TF-IDF Blocking ──▶ Feature Engineering ──┐
-  tableB.csv ──┘                   (94.9% reduction)   (20 features)       │
+  tableB.csv ──┘                   (99.8% reduction)   (20 features)       │
                                                                             ▼
                                                                      LightGBM Training
                                                                      (early stopping)
@@ -57,21 +57,23 @@ See [FEATURES.md](FEATURES.md) for the full feature catalog with descriptions.
 
 ![Calibration Curve](results/calibration_curve.png)
 
-Isotonic regression maps raw LightGBM scores to calibrated probabilities. The Brier score improves from raw to calibrated, meaning the output probabilities are reliable enough to set operational thresholds: auto-link, human review, or auto-reject.
+Isotonic regression maps raw LightGBM scores to calibrated probabilities. The Brier score improves modestly from 0.066 (raw) to 0.055 (calibrated) — expected, since LightGBM's binary log-loss objective already produces semi-calibrated outputs. The calibrated probabilities are then used to select a max-F1 decision threshold (0.36 on the validation set).
 
 ## Blocking Recall Ceiling
 
-**Recall ceiling: 1.000** (1,167 / 1,167 labeled true matches survived blocking)
+**Recall ceiling: 0.992** (1,158 / 1,167 labeled true matches survived blocking)
 
-The TF-IDF cosine blocker with threshold 0.1 achieves perfect recall on the labeled pairs while reducing the candidate space by 94.9% (4.4M full cartesian to 225K candidates). This is reported separately from end-to-end F1 because the blocker imposes a hard ceiling on downstream recall: no matcher can recover pairs the blocker drops.
+The TF-IDF cosine blocker with threshold 0.38 reduces the 4.4M-pair cartesian product to ~10K candidates (99.8% reduction) while retaining 99.2% of true matches. The 9 lost pairs are the recall cost of aggressive blocking — a tradeoff against the quadratic scaling of pairwise comparison.
+
+The blocking ceiling is measured separately from the matcher's F1. The matcher is evaluated on the benchmark's provided train/valid/test splits for comparability with published results (DeepMatcher, Ditto). The blocking ceiling is an independent measurement of blocker quality on the full cartesian product.
 
 ## What This Demonstrates
 
 | Component | Skill |
 |-----------|-------|
 | Feature engineering + LightGBM training | Trained and evaluated an entity-resolution matching model end-to-end |
-| Isotonic calibration + threshold selection | Calibrated match probabilities for principled auto-link / review thresholds |
-| Blocking recall ceiling, reported separately | Measured the blocking recall ceiling independently of end-to-end F1 |
+| Isotonic calibration + threshold selection | Calibrated match probabilities for principled threshold selection |
+| Blocking recall ceiling, measured separately | Quantified the blocker's recall/reduction tradeoff independently of matcher F1 |
 | Evaluation harness, built before the model | Evaluation harness before the model: quality measured, not guessed |
 | Config-driven, dataset-generic pipeline | Engineering: one config change to run on a new dataset |
 

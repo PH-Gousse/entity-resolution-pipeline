@@ -74,6 +74,7 @@ def evaluate(
 
     if raw_model is not None:
         raw_scores = calibrated_model.predict_raw(X_test)
+        metrics["brier_score_raw"] = float(brier_score_loss(y_test, np.clip(raw_scores, 0, 1)))
         plot_calibration_curve(y_test, raw_scores, probs, output_dir / "calibration_curve.png")
 
     if raw_model is not None and feature_names is not None:

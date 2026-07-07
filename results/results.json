@@ -9,7 +9,8 @@
     "brier_score": 0.05503084785045366,
     "n_test": 2293,
     "n_positive": 234,
-    "n_predicted_positive": 301
+    "n_predicted_positive": 301,
+    "brier_score_raw": 0.06602388433227617
   },
   "baseline": {
     "threshold": 0.7073170731707318,
@@ -24,5 +25,6 @@
     "n_predicted_positive": 342,
     "baseline_feature": "token_sort_ratio",
     "baseline_type": "single_feature"
-  }
+  },
+  "blocking_recall_ceiling": 0.9922879177377892
 }

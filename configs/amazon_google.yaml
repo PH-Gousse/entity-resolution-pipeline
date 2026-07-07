@@ -19,7 +19,7 @@ model:
 
 blocking:
   method: tfidf_cosine
-  threshold: 0.1
+  threshold: 0.38
 
 pipeline:
   random_seed: 42
